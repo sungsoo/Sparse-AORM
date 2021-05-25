@@ -7,7 +7,8 @@ from tqdm import tqdm
 
 def apsp_sparse_AormIterator(A, k=-1, method = 'sp_mm', sparseformat=csr_matrix):
     # np.fill_diagonal(A, 0)
-    A.setdiag(0.0)
+    A.setdiag(0)
+    A.eliminate_zeros()
     n, e = A.shape[0], A.nnz
     mu_degree = round(2*e / n, 2)
     print(f'# |V|: {n}, |E|: {e}, mean degree: {mu_degree}')
