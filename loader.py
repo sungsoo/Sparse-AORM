@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 import scipy.sparse as sps
-# from scipy.sparse import csr_matrix
 from scipy.sparse import coo_matrix, csr_matrix, lil_matrix, csc_matrix
 from scipy.sparse.csgraph import connected_components
 
@@ -59,13 +58,15 @@ def load_networks(filepath, sparse=False):
     df2.values[f(df.FromNodeId), f(df.ToNodeId)] = 1
 
     if sparse == False:
-        A = df2.values
-        A = np.array(A, dtype=np.uint16)
+        A = np.array(df2.values, dtype=np.uint16)
         n, e = len(A), np.count_nonzero(A)
     else:
         D = np.array(df2.values, dtype=np.uint16)
         A = csr_matrix(D)
+        A.setdiag(0)
+        A.eliminate_zeros()
         n, e = A.shape[0], A.nnz
+        # print(f'# to dense |E|: {np.count_nonzero(A.todense())}')
 
     return A, n, e  
 
